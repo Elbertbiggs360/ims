@@ -6,7 +6,7 @@ class BaseHandler(RequestHandler):
 
 class MainHandler(BaseHandler):
   def get(self):
-    self.write({'message': 'API is running...'})
+    self.write('API is running at port 8888...')
 
 def make_app():
   return Application([
