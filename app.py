@@ -1,8 +1,28 @@
+import os
 import tornado.ioloop
 from tornado.web import Application, RequestHandler
+import json
 
 companies = addresses = people = files = departments = contacts = employees =
 spectrum = type_approval = numbering = broadcasting = postal = telecom = []
+
+
+HANDLERS = [
+        (r"/", MainHandler),
+        ('/companies', Companies),
+        ('/addresses', Addresses),
+        ('/people', People),
+        ('/files', Files),
+        ('/departments', Departments),
+        ('/contacts', Contacts),
+        ('/employees', Employees),
+        ('/spectrum', Employees),
+        ('/typeapproval', TypeApproval),
+        ('/numbering', Numbering),
+        ('/broadcasting', Broadcasting),
+        ('/postal', Postal),
+        ('/telecom', Telecom)
+    ]
 
 
 class BaseHandler(RequestHandler):
@@ -119,22 +139,7 @@ class Telecom(BaseHandler):
 
 
 def make_app():
-    return Application([
-        (r"/", MainHandler),
-        ('/companies', Companies),
-        ('/addresses', Addresses),
-        ('/people', People),
-        ('/files', Files),
-        ('/departments', Departments),
-        ('/contacts', Contacts),
-        ('/employees', Employees),
-        ('/spectrum', Employees),
-        ('/typeapproval', TypeApproval),
-        ('/numbering', Numbering),
-        ('/broadcasting', Broadcasting),
-        ('/postal', Postal),
-        ('/telecom', Telecom)
-    ], debug=True)
+    return Application(HANDLERS, debug=True)
 
 if __name__ == "__main__":
     app = make_app()
