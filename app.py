@@ -1,7 +1,7 @@
 import os
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
-import json
+from utils import load_json_data
 
 companies = addresses = people = files = departments = contacts = employees \
  = spectrum = type_approval = numbering = broadcasting = postal = telecom = []
@@ -21,10 +21,7 @@ class MainHandler(BaseHandler):
 class Companies(BaseHandler):
     """ Model for Company data """
     def get(self):
-        name = "companies"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        companies = json.load(data)
-        self.write({"companies": companies})
+        self.write({"companies": load_json_data(info_dir, "companies")})
 
     def post(self):
         pass
@@ -33,10 +30,7 @@ class Companies(BaseHandler):
 class Addresses(BaseHandler):
     """ Model for Address data """
     def get(self):
-        name = "locations"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        addresses = json.load(data)
-        self.write({"addresses": addresses})
+        self.write({"addresses": load_json_data(info_dir, "locations")})
 
     def post(self):
         pass
@@ -45,10 +39,7 @@ class Addresses(BaseHandler):
 class People(BaseHandler):
     """ Model for People data """
     def get(self):
-        name = "people"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        people = json.load(data)
-        self.write({"people": people})
+        self.write({"people": load_json_data(info_dir, "people")})
 
     def post(self):
         pass
@@ -57,10 +48,7 @@ class People(BaseHandler):
 class Files(BaseHandler):
     """ Model for Files data """
     def get(self):
-        name = "files"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        files = json.load(data)
-        self.write({"files": files})
+        self.write({"files": load_json_data(info_dir, "files")})
 
     def post(self):
         pass
@@ -69,10 +57,7 @@ class Files(BaseHandler):
 class Departments(BaseHandler):
     """ Model for Departments data """
     def get(self):
-        name = "departments"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        departments = json.load(data)
-        self.write({"department": departments})
+        self.write({"departments": load_json_data(info_dir, "departments")})
 
     def post(self):
         pass
@@ -81,10 +66,7 @@ class Departments(BaseHandler):
 class Contacts(BaseHandler):
     """ Model for Contacts data """
     def get(self):
-        name = "contacts"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        contacts = json.load(data)
-        self.write({"contacts": contacts})
+        self.write({"contacts": load_json_data(info_dir, "contacts")})
 
     def post(self):
         pass
@@ -93,10 +75,7 @@ class Contacts(BaseHandler):
 class Employees(BaseHandler):
     """ Model for Employees data """
     def get(self):
-        name = "employees"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        employees = json.load(data)
-        self.write({"employees": employees})
+        self.write({"employees": load_json_data(info_dir, "employees")})
 
     def post(self):
         pass
@@ -105,10 +84,7 @@ class Employees(BaseHandler):
 class Spectrum(BaseHandler):
     """ Model for Spectrum data """
     def get(self):
-        name = "spectrum"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        spectrum = json.load(data)
-        self.write({"spectrum": spectrum})
+        self.write({"spectrum": load_json_data(info_dir, "spectrum")})
 
     def post(self):
         pass
@@ -117,10 +93,7 @@ class Spectrum(BaseHandler):
 class TypeApproval(BaseHandler):
     """ Model for Type Approval data """
     def get(self):
-        name = "type_approval"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        type_approval = json.load(data)
-        self.write({"type_approval": type_approval})
+        self.write({"type_approval": load_json_data(info_dir, "type_approval")})
 
     def post(self):
         pass
@@ -129,10 +102,7 @@ class TypeApproval(BaseHandler):
 class Numbering(BaseHandler):
     """ Model for Numbering data """
     def get(self):
-        name = "numbering"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        numbering = json.load(data)
-        self.write({"numbering": numbering})
+        self.write({"numbering": load_json_data(info_dir, "numbering")})
 
     def post(self):
         pass
@@ -141,10 +111,7 @@ class Numbering(BaseHandler):
 class Broadcasting(BaseHandler):
     """ Model for Broadcasting data """
     def get(self):
-        name = "broadcasting"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        broadcasting = json.load(data)
-        self.write({"broadcasting": broadcasting})
+        self.write({"broadcasting": load_json_data(info_dir, "broadcasting")})
 
     def post(self):
         pass
@@ -153,10 +120,7 @@ class Broadcasting(BaseHandler):
 class Postal(BaseHandler):
     """ Model for Postal data """
     def get(self):
-        name = "postal"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        postal = json.load(data)
-        self.write({"postal": postal})
+        self.write({"postal": load_json_data(info_dir, "postal")})
 
     def post(self):
         pass
@@ -165,10 +129,7 @@ class Postal(BaseHandler):
 class Telecom(BaseHandler):
     """ Model for Technical Telecom data """
     def get(self):
-        name = "telecom"
-        data = open(os.path.join(info_dir, "%s.json" % name), 'r')
-        telecom = json.load(data)
-        self.write({"telecom": telecom})
+        self.write({"telecom": load_json_data(info_dir, "telecom")})
 
     def post(self):
         pass
