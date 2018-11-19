@@ -3,9 +3,6 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
 from utils import load_json_data
 
-companies = addresses = people = files = departments = contacts = employees \
- = spectrum = type_approval = numbering = broadcasting = postal = telecom = []
-
 info_dir = os.path.join(os.path.dirname(__file__), "mock_data")
 
 
@@ -21,7 +18,7 @@ class MainHandler(BaseHandler):
 class Companies(BaseHandler):
     """ Model for Company data """
     def get(self):
-        self.write({"companies": load_json_data(info_dir, "companies")})
+        self.write({"companies": datastore["companies"]})
 
     def post(self):
         pass
@@ -30,7 +27,7 @@ class Companies(BaseHandler):
 class Addresses(BaseHandler):
     """ Model for Address data """
     def get(self):
-        self.write({"addresses": load_json_data(info_dir, "locations")})
+        self.write({"addresses": datastore["addresses"]})
 
     def post(self):
         pass
@@ -39,7 +36,7 @@ class Addresses(BaseHandler):
 class People(BaseHandler):
     """ Model for People data """
     def get(self):
-        self.write({"people": load_json_data(info_dir, "people")})
+        self.write({"people": datastore["people"]})
 
     def post(self):
         pass
@@ -48,7 +45,7 @@ class People(BaseHandler):
 class Files(BaseHandler):
     """ Model for Files data """
     def get(self):
-        self.write({"files": load_json_data(info_dir, "files")})
+        self.write({"files": datastore["files"]})
 
     def post(self):
         pass
@@ -57,7 +54,7 @@ class Files(BaseHandler):
 class Departments(BaseHandler):
     """ Model for Departments data """
     def get(self):
-        self.write({"departments": load_json_data(info_dir, "departments")})
+        self.write({"departments": datastore["departments"]})
 
     def post(self):
         pass
@@ -66,7 +63,7 @@ class Departments(BaseHandler):
 class Contacts(BaseHandler):
     """ Model for Contacts data """
     def get(self):
-        self.write({"contacts": load_json_data(info_dir, "contacts")})
+        self.write({"contacts": datastore["contacts"]})
 
     def post(self):
         pass
@@ -75,7 +72,7 @@ class Contacts(BaseHandler):
 class Employees(BaseHandler):
     """ Model for Employees data """
     def get(self):
-        self.write({"employees": load_json_data(info_dir, "employees")})
+        self.write({"employees": datastore["employees"]})
 
     def post(self):
         pass
@@ -84,7 +81,7 @@ class Employees(BaseHandler):
 class Spectrum(BaseHandler):
     """ Model for Spectrum data """
     def get(self):
-        self.write({"spectrum": load_json_data(info_dir, "spectrum")})
+        self.write({"spectrum": datastore["spectrum"]})
 
     def post(self):
         pass
@@ -93,7 +90,9 @@ class Spectrum(BaseHandler):
 class TypeApproval(BaseHandler):
     """ Model for Type Approval data """
     def get(self):
-        self.write({"type_approval": load_json_data(info_dir, "type_approval")})
+        self.write({
+                "type_approval": datastore["typeapproval"]
+            })
 
     def post(self):
         pass
@@ -102,7 +101,7 @@ class TypeApproval(BaseHandler):
 class Numbering(BaseHandler):
     """ Model for Numbering data """
     def get(self):
-        self.write({"numbering": load_json_data(info_dir, "numbering")})
+        self.write({"numbering": datastore["numbering"]})
 
     def post(self):
         pass
@@ -111,7 +110,7 @@ class Numbering(BaseHandler):
 class Broadcasting(BaseHandler):
     """ Model for Broadcasting data """
     def get(self):
-        self.write({"broadcasting": load_json_data(info_dir, "broadcasting")})
+        self.write({"broadcasting": datastore["broadcasting"]})
 
     def post(self):
         pass
@@ -120,7 +119,7 @@ class Broadcasting(BaseHandler):
 class Postal(BaseHandler):
     """ Model for Postal data """
     def get(self):
-        self.write({"postal": load_json_data(info_dir, "postal")})
+        self.write({"postal": datastore["postal"]})
 
     def post(self):
         pass
@@ -129,7 +128,7 @@ class Postal(BaseHandler):
 class Telecom(BaseHandler):
     """ Model for Technical Telecom data """
     def get(self):
-        self.write({"telecom": load_json_data(info_dir, "telecom")})
+        self.write({"telecom": datastore["telecom"]})
 
     def post(self):
         pass
@@ -152,11 +151,20 @@ HANDLERS = [
         ("/postal", Postal),
         ("/telecom", Telecom)
     ]
+datastore = {}
 
 
 def make_app():
     """ instantiate application """
-    return Application(HANDLERS, debug=True)
+    app = Application(HANDLERS, debug=True)
+    for handler in HANDLERS:
+        name = handler[0].split("/")[1]
+        item = name
+        if not item.strip():
+            continue
+        item = load_json_data(info_dir, name)
+        datastore[name] = item
+    return app
 
 if __name__ == "__main__":
     app = make_app()
