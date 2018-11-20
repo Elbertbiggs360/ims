@@ -3,7 +3,7 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
 import json
 
-from utils import load_json_data, find_resource
+from utils import load_json_data, find_resource, write_json_data
 
 info_dir = os.path.join(os.path.dirname(__file__), "mock_data")
 
@@ -36,11 +36,18 @@ class Companies(BaseHandler):
         item = find_resource(companies, "name", self.json_args["name"])
         if item:
             return self.write("Item {} already exists!".format(item["name"]))
-        self.json_args["id"] = companies[-1]["id"]++
+        self.json_args["id"] = companies[-1]["id"]+1
         try:
-            companies.append(self.json_args)
-        except:
-            self.write("We encountered an error while adding new company")
+            temp = companies
+            temp.append(self.json_args)
+            if write_json_data(info_dir, self.name.lower(), temp):
+                companies = temp
+                self._status_code = 201
+                return self.write(self.json_args)
+        except Exception as e:
+            self.write(
+                "Error adding new company.\n{}".format(e)
+                )
 
 
 class Company(BaseHandler):

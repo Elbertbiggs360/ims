@@ -8,8 +8,8 @@ def load_json_data(file_path, file_name):
         this function loads JSON blobs from files on the path
     """
     # TODO create a read-safe method
-    data = open(os.path.join(file_path, "%s.json" % file_name), 'r')
-    json_data = json.load(data)
+    with open(os.path.join(file_path, "%s.json" % file_name), "r") as data:
+        json_data = json.load(data)
     return json_data
 
 
@@ -22,8 +22,12 @@ def find_resource(source, key, target):
             return item
 
 
-def write_json_data(file_path, data):
+def write_json_data(file_path, file_name, data):
     """
         write json data to file
     """
-    pass
+    path_to_file = os.path.join(file_path, "%s.json" % file_name)
+    with open(path_to_file, "w") as target:
+        json.dump(data, target)
+        return True
+    return False
