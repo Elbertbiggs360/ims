@@ -1,6 +1,7 @@
 import os
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
+
 from utils import load_json_data, find_resource
 
 info_dir = os.path.join(os.path.dirname(__file__), "mock_data")
@@ -17,14 +18,37 @@ class MainHandler(BaseHandler):
 
 class Companies(BaseHandler):
     """ Model for All Company data """
-    def get(self, id):
+    name = "Companies"
+
+    def get(self):
         companies = datastore["companies"]
-        if id:
-            return self.write(find_resource(companies, "id", int(id)))
         self.write({"companies": companies})
 
     def post(self):
         pass
+
+
+class Company(BaseHandler):
+    """
+        model for individual company data
+    """
+    name = "Company"
+
+    def get(self, id):
+        companies = datastore["companies"]
+        if id:
+            try:
+                return self.write(find_resource(companies, "id", int(id)))
+            except Exception as e:
+                self._status_code = 404
+                return self.write("{} not found".format(self.name))
+        self.redirect("/companies")
+
+    def put(self):
+        pass
+
+    def post(self, id):
+        self.redirect("/companies", permanent=True)
 
 
 class Addresses(BaseHandler):
@@ -174,7 +198,8 @@ class Telecom(BaseHandler):
 # Define constant with handlers for different routes
 HANDLERS = [
         (r"/", MainHandler),
-        ("/companies/([^/]+)?", Companies),
+        ("/companies", Companies),
+        (r"/companies/([^/]+)?", Company),
         ("/addresses/([^/]+)?", Addresses),
         ("/people/([^/]+)?", People),
         ("/files/([^/]+)?", Files),
