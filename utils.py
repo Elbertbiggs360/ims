@@ -20,3 +20,10 @@ def find_resource(source, key, target):
     for item in source:
         if item[key] is target:
             return item
+
+
+def write_json_data(file_path, data):
+    """
+        write json data to file
+    """
+    pass

@@ -1,6 +1,7 @@
 import os
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
+import json
 
 from utils import load_json_data, find_resource
 
@@ -8,7 +9,13 @@ info_dir = os.path.join(os.path.dirname(__file__), "mock_data")
 
 
 class BaseHandler(RequestHandler):
-    pass
+    def prepare(self):
+        if self.request.headers.get(
+                                    "Content-Type", ""
+                                    ).startswith("application/json"):
+            self.json_args = json.loads(self.request.body)
+        else:
+            self.json_args = None
 
 
 class MainHandler(BaseHandler):
@@ -25,7 +32,15 @@ class Companies(BaseHandler):
         self.write({"companies": companies})
 
     def post(self):
-        pass
+        companies = datastore["companies"]
+        item = find_resource(companies, "name", self.json_args["name"])
+        if item:
+            return self.write("Item {} already exists!".format(item["name"]))
+        self.json_args["id"] = companies[-1]["id"]++
+        try:
+            companies.append(self.json_args)
+        except:
+            self.write("We encountered an error while adding new company")
 
 
 class Company(BaseHandler):
