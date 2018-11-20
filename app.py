@@ -72,6 +72,23 @@ class Company(BaseHandler):
     def post(self, id):
         self.redirect("/companies", permanent=True)
 
+    def delete(self, id):
+        companies = datastore["companies"]
+        if id:
+            try:
+                temp = companies
+                item = find_resource(temp, "id", int(id))
+                del temp[item["id"]]
+                if write_json_data(info_dir, self.name.lower(), temp):
+                    companies = temp
+                    self._status_code = 200
+                    res = "Item with id {} deleted successfully!".format(id)
+                    return self.write(res)
+            except Exception as e:
+                self._status_code = 404
+                return self.write("Resource does not exist")
+        self.write("No id specified!")
+
 
 class Addresses(BaseHandler):
     """ Model for Address data """
