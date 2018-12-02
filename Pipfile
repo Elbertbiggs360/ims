@@ -8,6 +8,8 @@ tornado = "*"
 pylint = "*"
 sqlalchemy = "*"
 aiomysql = "*"
+aiopg = "*"
+"psycopg2-binary" = "*"
 
 [dev-packages]
 "pep8" = "*"
