@@ -3,7 +3,7 @@ import tornado.web
 import tornado.locks
 from tornado.ioloop import IOLoop
 from tornado.options import define, options
-import sqlalchemy as sa
+from sqlalchemy.orm import sessionmaker
 from aiopg.sa import create_engine
 import psycopg2
 
@@ -14,7 +14,7 @@ from handlers import (
     Company,
     Addresses,
     Address,
-    People,
+    PeopleHandler,
     Files,
     Departments,
     Contacts,
@@ -28,22 +28,13 @@ from handlers import (
     Broadcasting)
 
 
-info_dir = os.path.join(os.path.dirname(__file__), "mock_data")
-metadata = sa.MetaData()
-
-company = sa.Table(
-        "tbl",
-        metadata,
-        sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("val", sa.String(255)))
-
 HANDLERS = [
         (r"/", MainHandler),
         ("/companies", Companies),
         (r"/companies/([^/]+)?", Company),
         ("/addresses", Addresses),
         ("/addresses/([^/]+)?", Address),
-        ("/people/([^/]+)?", People),
+        ("/people/([^/]+)?", PeopleHandler),
         ("/files/([^/]+)?", Files),
         ("/departments/([^/]+)?", Departments),
         ("/contacts/([^/]+)?", Contacts),
@@ -59,8 +50,11 @@ datastore = {}
 
 
 class Application(tornado.web.Application):
-    def __init__(self, db):
+    def __init__(self, db, engine):
         self.db = db
+        Session = sessionmaker(db)
+        Session.configure(bind=engine)
+        self.session = Session()
         # Define constant with handlers for different routes
         handlers = HANDLERS
         settings = dict(
@@ -77,18 +71,21 @@ async def populate_data(app):
         item = name
         if not item.strip():
             continue
-        item = load_json_data(info_dir, name)
+        item = load_json_data(
+            os.path.join(os.path.dirname(__file__), "mock_data"),
+            name)
         datastore[name] = item
 
 
 async def maybe_create_tables(conn):
     """ Generate tables from schemas """
     try:
-        await conn.execute("DROP TABLE IF EXISTS companies")
+        await conn.execute("DROP TABLE IF EXISTS people")
         await conn.execute(
-            """CREATE TABLE companies (
+            """CREATE TABLE people (
                 id serial PRIMARY KEY,
-                val varchar(255))""")
+                first_name varchar(255),
+                last_name varchar(255),)""")
     except psycopg2.ProgrammingError:
         pass
 
@@ -117,8 +114,8 @@ async def main():
     )
 
     async with engine.acquire() as conn:
-        await maybe_create_tables(conn)
-        app = Application(conn)
+        # await maybe_create_tables(conn)
+        app = Application(conn, engine)
         app.listen(options.port)
 
         shutdown_event = tornado.locks.Event()

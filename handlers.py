@@ -125,13 +125,10 @@ class Address(BaseHandler):
         pass
 
 
-class People(BaseHandler):
+class PeopleHandler(BaseHandler):
     """ Model for People data """
-    def get(self, id):
-        people = datastore["people"]
-        if id:
-            return self.write(find_resource(people, "id", int(id)))
-        self.write({"people": people})
+    async def get(self):
+        self.write({"people": "test"})
 
     def post(self):
         pass
